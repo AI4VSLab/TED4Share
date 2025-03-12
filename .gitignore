@@ -1,0 +1,11 @@
+./checkpoints
+./qiai-lab
+./lightning_logs
+.history
+
+*.ckpt
+*.pyc
+*.save
+events.out.tfevents*
+checkpoints/*
+__pycache__/
