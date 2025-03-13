@@ -251,4 +251,3 @@ dependencies:
       - typeshed-client==2.7.0
       - wandb==0.18.5
       - yarl==1.10.0
-prefix: /data/michael/miniconda3/envs/dl_new_pl

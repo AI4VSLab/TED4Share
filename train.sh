@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Variables
-ROOT_DIR="/data/michael/ted_rashmi/TED/data/TED/12_mar_2025"  # Path to CSV files
+ROOT_DIR=""  # Path to CSV files, ie if path to train.csv is /home/user/data/train.csv, then ROOT_DIR="/home/user/data"
 CHECKPOINT_DIR="./checkpoints"
 COMMENT="train_ted"
 MODEL_ARCHITECTURE="resnet50"
@@ -30,7 +30,6 @@ if [ -z "$CKPT_PATH" ]; then
         --feature_dim "$FEATURE_DIM" \
         --num_classes "$NUM_CLASSES" \
         --finetune "$FINETUNE" \
-        #--fast_dev_run "$fast_dev_run" 
 else
     python train.py \
         --root_dir "$ROOT_DIR" \
@@ -45,5 +44,4 @@ else
         --num_classes "$NUM_CLASSES" \
         --ckpt_path "$CKPT_PATH" \
         --finetune "$FINETUNE" \
-        #--fast_dev_run "$fast_dev_run" 
 fi

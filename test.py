@@ -119,13 +119,15 @@ if __name__ == "__main__":
     print("\nEvaluating the model on the test dataset...")
     evaluate_model(model, test_dataloader, device="cuda" if torch.cuda.is_available() else "cpu", class_names=args.classes)
 
+
+
     # Example: Test with a single image
-    single_image_path = "/home/CenteredData/TED Federated Learning Project/Photos/TED_1019.png"  # Replace with the path to your image
-    print("\nTesting a single image...")
-    prediction = predict_single_image(
-        model,
-        single_image_path,
-        test_transform,
-        device="cuda" if torch.cuda.is_available() else "cpu"
-    )
-    print(f"Predicted Class for '{single_image_path}': {args.classes[prediction]}")
+    # single_image_path = "path to image"  # Replace with the path to your image
+    # print("\nTesting a single image...")
+    # prediction = predict_single_image(
+    #     model,
+    #     single_image_path,
+    #     test_transform,
+    #     device="cuda" if torch.cuda.is_available() else "cpu"
+    # )
+    # print(f"Predicted Class for '{single_image_path}': {args.classes[prediction]}")

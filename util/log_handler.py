@@ -1,6 +1,6 @@
 # --------------------------------------------------------
 # log_hander to provide functions for logging the results
-# Written by Sina Gholami
+# Written by Sina Gholami from https://github.com/sinagh72/TED
 # --------------------------------------------------------
 import os
 

@@ -1,6 +1,6 @@
 # --------------------------------------------------------
 # get the image transformation for training and validation
-# Written by Sina Gholami
+# Written by Sina Gholami from https://github.com/sinagh72/TED
 # -------------------
 import torch
 import torchvision.transforms.v2 as T

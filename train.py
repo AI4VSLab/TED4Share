@@ -37,9 +37,6 @@ def parse_args():
     parser.add_argument('--finetune', type=bool, default=False,
                         help="Whether to reset MLP or freeze backbone for fine-tuning")
 
-    parser.add_argument('--fast_dev_run', type=bool, default=False,
-                        help="Run a fast development run to check if everything is working")
-
     # Inference-only argument (to test a single image at the end)
     parser.add_argument('--inference_image', type=str, default=None,
                         help="Path to a single image for testing inference. e.g. /path/to/image.png")
@@ -154,7 +151,6 @@ if __name__ == "__main__":
             ModelCheckpoint(dirpath=save_path, save_top_k=1, monitor="val_loss", mode="min")
         ],
         log_every_n_steps=1,
-        fast_dev_run= args.fast_dev_run
     )
 
     # ---------------------------------
