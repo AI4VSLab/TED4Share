@@ -15,3 +15,9 @@ conda env create -f env.yaml
 or training with all folds
 `bash run/bash/train_cv_all_folds.sh` 
 
+
+## Preprocessing
+`preprocess_images.ipynb` contains code to use mediapipe to extract eye area of the face and saves them to a path. For images that can't be automatically cropped, `preprocess_images.ipynb` will have a list that you can save to csv for `crop_maual.ipynb`. `crop_maual.ipynb` allows you to crop directly in the notebook. 
+
+
+
