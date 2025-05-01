@@ -1,0 +1,1 @@
+nvflare simulator /data/michael/TED/nvflare/jobs/job_config/pt_client_api -w /data/michael/TED/nvflare/jobs/sim_workdir -gpu 0

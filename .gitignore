@@ -8,4 +8,7 @@
 *.save
 events.out.tfevents*
 checkpoints/*
+*/checkpoints/*
 __pycache__/
+
+*.pt

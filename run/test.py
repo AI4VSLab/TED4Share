@@ -3,9 +3,9 @@ import argparse
 import torch
 from torchvision import transforms
 from torch.utils.data import DataLoader
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from PIL import Image
 
+from run.util_test import evaluate_model
 from dataset.datamodule import CustomDataset, load_from_csv
 from models.classification import ClassificationNet
 from util.get_models import get_baseline_model
@@ -51,7 +51,7 @@ def evaluate_model(model, dataloader, device, class_names):
 
     with torch.no_grad():
         for batch in dataloader:
-            imgs, labels = batch
+            imgs, labels = batch['img'], batch['label']
             imgs = imgs.to(device)
             labels = labels.to(device)
 
@@ -119,15 +119,13 @@ if __name__ == "__main__":
     print("\nEvaluating the model on the test dataset...")
     evaluate_model(model, test_dataloader, device="cuda" if torch.cuda.is_available() else "cpu", class_names=args.classes)
 
-
-
     # Example: Test with a single image
-    # single_image_path = "path to image"  # Replace with the path to your image
-    # print("\nTesting a single image...")
-    # prediction = predict_single_image(
-    #     model,
-    #     single_image_path,
-    #     test_transform,
-    #     device="cuda" if torch.cuda.is_available() else "cpu"
-    # )
-    # print(f"Predicted Class for '{single_image_path}': {args.classes[prediction]}")
+    single_image_path = "/home/CenteredData/TED Federated Learning Project/Photos/TED_1019.png"  # Replace with the path to your image
+    print("\nTesting a single image...")
+    prediction = predict_single_image(
+        model,
+        single_image_path,
+        test_transform,
+        device="cuda" if torch.cuda.is_available() else "cpu"
+    )
+    print(f"Predicted Class for '{single_image_path}': {args.classes[prediction]}")

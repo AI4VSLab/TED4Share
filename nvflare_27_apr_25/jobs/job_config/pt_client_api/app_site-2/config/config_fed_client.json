@@ -1,0 +1,30 @@
+{
+    "format_version": 2,
+    "executors": [
+        {
+            "tasks": [
+                "*"
+            ],
+            "executor": {
+                "path": "nvflare.app_opt.pt.in_process_client_api_executor.PTInProcessClientAPIExecutor",
+                "args": {
+                    "task_script_path": "train_fl.py",
+                    "task_script_args": " --n_clients 2 --num_rounds 2 --script train_fl.py --key_metric accuracy  --ports 7777,8888  --comment eye_cropped_less_aug_expanded_dataset --model_architecture microsoft/resnet-18 --pretrained --batch_size 32 --img_size 512 --epochs 50 --lr 3e-05 --feature_dim 512 --checkpoint_dir ./checkpoints --num_classes 2 --root_dir /data/michael/TED/data/TED/16_apr_2025_big_crop_10_cv/fold_1   --loss_type focal "
+                }
+            }
+        }
+    ],
+    "components": [
+        {
+            "id": "event_to_fed",
+            "path": "nvflare.app_common.widgets.convert_to_fed_event.ConvertToFedEvent",
+            "args": {
+                "events_to_convert": [
+                    "analytix_log_stats"
+                ]
+            }
+        }
+    ],
+    "task_data_filters": [],
+    "task_result_filters": []
+}
