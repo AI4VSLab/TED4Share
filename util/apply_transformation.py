@@ -4,7 +4,7 @@
 # -------------------
 import torch
 import torchvision.transforms.v2 as transforms
-from torchvision.transforms import InterpolationMode, AutoAugmentPolicy, AutoAugment
+from torchvision.transforms import InterpolationMode, AutoAugmentPolicy, AutoAugment, RandAugment
 #from torchvision import transforms
 from dataset.custom_aug import RandomCutOut
 
@@ -58,6 +58,7 @@ def get_transforms(args):
             transforms.RandomResizedCrop(args.img_size, scale=(0.9, 1.0)),
             #transforms.RandomRotation((0,5)),
             transforms.RandomHorizontalFlip(),
+            RandAugment(num_ops=2, magnitude=7),
             transforms.ToTensor(),
         ])
         

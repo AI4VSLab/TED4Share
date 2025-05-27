@@ -8,14 +8,12 @@ from sklearn.metrics import roc_curve, auc
 import argparse
 
 def plot_roc_from_folder(folder):
-    # ------------------ grab paths ------------------
     csv_paths = glob.glob(os.path.join(folder, "tb_logs", "*", "test_results*.csv"))
     print(csv_paths)
     if not csv_paths:
         print("No test_results.csv files found.")
         return
 
-    # ------------------ auroc ------------------
     all_labels = []
     all_probs = []
     all_pred_cls = []
@@ -25,10 +23,6 @@ def plot_roc_from_folder(folder):
         if 'labels' not in df or 'pred_probs' not in df or 'pred_class' not in df:
             print(f"Skipping {csv_path}, missing required columns.")
             continue
-
-        # Check for NaN values
-        if df[['labels', 'pred_probs', 'pred_class']].isnull().any().any():
-            print(f"NaN detected in {csv_path}")
 
         # If predicted class is 0, use 1 - prob
         probs = df['pred_probs'].values
@@ -43,8 +37,6 @@ def plot_roc_from_folder(folder):
         return
 
     # Compute aggregated ROC
-    print(all_labels)
-    print(all_probs)
     fpr, tpr, _ = roc_curve(all_labels, all_probs)
     roc_auc = auc(fpr, tpr)
 
@@ -66,31 +58,6 @@ def plot_roc_from_folder(folder):
     plt.savefig(output_path)
     plt.close()
     print(f"Saved aggregated ROC to: {output_path}")
-
-    # ------------------ aggerate stats ------------------
-    # Find all summary CSVs
-    summary_paths = glob.glob(os.path.join(folder, "tb_logs", "*", "*summary*.csv"))
-    if summary_paths:
-        summary_dfs = [pd.read_csv(p) for p in summary_paths]
-        stacked_df = pd.concat(summary_dfs, ignore_index=True)
-        avg_row = stacked_df.mean(numeric_only=True)
-        std_row = stacked_df.std(numeric_only=True)
-        # Convert Series to DataFrame and add a 'stat' column
-        avg_row = avg_row.to_frame().T
-        avg_row["stat"] = "avg"
-        std_row = std_row.to_frame().T
-        std_row["stat"] = "std"
-        # Add 'stat' column to original data
-        stacked_df["stat"] = "run"
-        # Reorder columns to put 'stat' first
-        cols = ["stat"] + [c for c in stacked_df.columns if c != "stat"]
-        summary_out = pd.concat([stacked_df, avg_row, std_row], ignore_index=True)[cols]
-        # Save
-        out_csv = os.path.join(folder, f'{folder.split("/")[-1]}_aggregated_summary.csv')
-        summary_out.to_csv(out_csv, index=False)
-        print(f"Saved aggregated summary to: {out_csv}")
-    else:
-        print("No summary CSV files found.")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Plot ROC curves from multiple test_results.csv files.')

@@ -1,1 +1,0 @@
-python plot_roc_curves.py /data/michael/TED/run/checkpoints/21_apr_25_7

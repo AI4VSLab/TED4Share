@@ -1,25 +1,20 @@
 #!/bin/bash
-export PYTHONPATH="/data/michael/TED"
+export PYTHONPATH="/data/michael/public_code/TED4Share"
 
-# ROOT_DIR="/home/CenteredData/CelebA/by_us/entire_dataset"
-ROOT_DIR="/data/michael/TED/data/TED/11_apr_2025_diff_seed/fold_1"  # Path to CSV files
-ROOT_DIR="/data/michael/TED/data/ffhq_cropped_aligned/entire_dataset_train"
-ROOT_DIR="/data/michael/TED/data/ffhq_cropped_aligned/cropped_eye_area/entire_dataset4train"
+ROOT_DIR="" # include fold_1
 
-CHECKPOINT_DIR="./checkpoints"
-COMMENT="mae_ffhq_eye_area_entire4train" 
+CHECKPOINT_DIR="../checkpoints"
+COMMENT="13_5_2025_1" 
 MODEL_ARCHITECTURE='facebook/vit-mae-base'   #"resnet50"
-PRETRAINED="True"
-BATCH_SIZE=512
+BATCH_SIZE=256
 IMG_SIZE=224
-EPOCHS=10
-FEATURE_DIM=0
+EPOCHS=50
+FEATURE_DIM=0 # keep this as 0 for MAE
 NUM_CLASSES=2
 CKPT_PATH=""       # Provide path if fine-tuning, else leave empty
-FINETUNE="False"   # Set to "True" if fine-tuning a checkpoint
 loss="mae"
-lr=2e-4 
-
+lr=2e-4
+  
 # Run training with or without checkpoint path
 if [ -z "$CKPT_PATH" ]; then
     python ../train.py \
@@ -27,13 +22,13 @@ if [ -z "$CKPT_PATH" ]; then
         --checkpoint_dir "$CHECKPOINT_DIR" \
         --comment "$COMMENT" \
         --model_architecture "$MODEL_ARCHITECTURE" \
-        --pretrained "$PRETRAINED" \
+        --pretrained  \
         --batch_size "$BATCH_SIZE" \
         --img_size "$IMG_SIZE" \
         --epochs "$EPOCHS" \
         --feature_dim "$FEATURE_DIM" \
         --num_classes "$NUM_CLASSES" \
-        --finetune "$FINETUNE" \
+        --no-finetune  \
         --loss_type "$loss" \
         --lr "$lr" 
 else
@@ -42,7 +37,7 @@ else
         --checkpoint_dir "$CHECKPOINT_DIR" \
         --comment "$COMMENT" \
         --model_architecture "$MODEL_ARCHITECTURE" \
-        --pretrained "$PRETRAINED" \
+        --pretrained  \
         --batch_size "$BATCH_SIZE" \
         --img_size "$IMG_SIZE" \
         --epochs "$EPOCHS" \
@@ -50,6 +45,6 @@ else
         --num_classes "$NUM_CLASSES" \
         --ckpt_path "$CKPT_PATH" \
         --loss_type "$loss" \
-        --finetune "$FINETUNE" \
+        --no-finetune \
         --lr "$lr" 
 fi

@@ -1,0 +1,1 @@
+python ../../util/plot_roc_curves.py /data/michael/TED/run/checkpoints/23_5_2025_2_finetune 

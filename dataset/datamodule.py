@@ -103,7 +103,7 @@ class CustomDatamodule(pl.LightningDataModule):
             self.data_train = CustomDataset(transform=self.train_transform, dataset=self.train_data, num_view = self.n_img_views )
             print(f'Training data: {len(self.data_train)}')
         if stage == "val":
-            self.data_val = CustomDataset(transform=self.test_transform, dataset=self.val_data)
+            self.data_val = CustomDataset(transform=self.test_transform, dataset=self.val_data, num_view = self.n_img_views )
         if stage == "test":
             self.data_test = CustomDataset(transform=self.test_transform, dataset=self.test_data)
 

@@ -32,7 +32,7 @@ class HFModel(nn.Module):
     def forward(self, x):
         return self.model(x).pooler_output.squeeze(-1).squeeze(-1)
 
-class HF_MAE_Model(nn.Module):
+class HF_CLS_Model(nn.Module):
     def __init__(self, model):
         super().__init__()
         self.model = model
@@ -61,13 +61,22 @@ def get_baseline_model(pretrained=True, model_architecture="resnet50", **kwargs)
         return model
     
     elif model_architecture == 'microsoft/resnet-50':
-        if pretrained: model = get_pretrained_model_hugging_face(pretrained_model_name=model_architecture)
-        else:
-            config = ResNetConfig.from_pretrained("microsoft/resnet-50")
-            # Initialize the model from config (random weights)
-            model = ResNetModel(config)
+        if 'for_cls' in kwargs and kwargs['for_cls']: 
+            config = ResNetForImageClassification.from_pretrained("microsoft/resnet-50").config
+            if 'classes' in kwargs: config.num_labels = len(kwargs['classes'])
+            model = ResNetForImageClassification.from_pretrained("microsoft/resnet-50", config=config, ignore_mismatched_sizes=True)
+            return HF_CLS_Model(model)
+        else: 
+            if pretrained: model = get_pretrained_model_hugging_face(pretrained_model_name=model_architecture)
+            else:
+                config = ResNetConfig.from_pretrained("microsoft/resnet-50")
+                # Initialize the model from config (random weights)
+                model = ResNetModel(config)
 
-        return HFModel(model)
+            return HFModel(model)
+        
+            
+        
 
     elif model_architecture == 'microsoft/resnet-18':
         if pretrained: 
@@ -76,21 +85,30 @@ def get_baseline_model(pretrained=True, model_architecture="resnet50", **kwargs)
             config = ResNetConfig.from_pretrained("microsoft/resnet-18")
             # Initialize the model from config (random weights)
             model = ResNetModel(config)
-        return HFModel(model)
+        if 'for_cls' in kwargs and kwargs['for_cls']: return HF_CLS_Model(model)
+        else: return HFModel(model)
     
     elif model_architecture == 'facebook/vit-mae-base':
+        
         mae_model = ViTMAEForPreTraining.from_pretrained('facebook/vit-mae-base')
-        processor = AutoImageProcessor.from_pretrained('facebook/vit-mae-base')
 
-        if 'use_for_classification' in kwargs and kwargs['use_for_classification']: 
+        if 'for_cls' in kwargs and kwargs['for_cls']: 
             classification_config = mae_model.config
             classification_config.num_labels = len(kwargs['classes'])  # Change this to match your number of classes
             classification_model = ViTForImageClassification(config=classification_config)
 
             # Step 4: Transfer encoder (ViT) weights from MAE to classification model
             classification_model.vit.load_state_dict(mae_model.vit.state_dict())
-            mae_model = HF_MAE_Model(classification_model)
+            mae_model = HF_CLS_Model(classification_model)
         return mae_model
+    elif model_architecture == 'vit-b':
+        if pretrained:
+            model = ViTForImageClassification.from_pretrained('google/vit-base-patch16-224')
+        else:
+            config = ViTForImageClassification.from_pretrained('google/vit-base-patch16-224').config
+            model = ViTForImageClassification(config)
+        
+        return HF_CLS_Model(model)
 
     # Add more architectures if needed
     raise ValueError(f"Unsupported architecture {model_architecture}")

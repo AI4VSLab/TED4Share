@@ -14,6 +14,7 @@ def define_parser():
     parser.add_argument("--launch_command", type=str, default="python3 -u")
     parser.add_argument("--ports", type=str, default="7777,8888")
     parser.add_argument("--export_config", action=argparse.BooleanOptionalAction, default=False)
+    parser.add_argument("--ckpt_fl_final", type=str, default="")
 
     # ----------------------- training parameters, from train.py ------------------
     parser.add_argument('--comment', type=str, default="local_model")
@@ -21,7 +22,7 @@ def define_parser():
     parser.add_argument("--pretrained", action=argparse.BooleanOptionalAction, default=False)
     parser.add_argument('--batch_size', type=int, default=32)
     parser.add_argument('--img_size', type=int, default=224)
-    parser.add_argument('--epochs', type=int, default=20)
+    
     parser.add_argument('--lr', type=float, default=3e-5) # 1e-3
     parser.add_argument('--feature_dim', type=int, default=2048)
     parser.add_argument('--checkpoint_dir', type=str, default="./checkpoints")
@@ -33,9 +34,16 @@ def define_parser():
    
     parser.add_argument("--finetune", action=argparse.BooleanOptionalAction, default=False)
     parser.add_argument('--loss_type', type=str, default="focal", choices=["focal", "ce", "simclr", "mae"], help='which loss to use')
+    
+    # optimizer and scheduler
+    parser.add_argument('--epochs', type=int, default=20)
+    parser.add_argument('--warmup_epochs', type=int, default=0, help="Number warmup epochs, if > 0, then we use a warmup scheduler")
+    parser.add_argument('--scheduler', type=str, default="cosine", choices=["cosine", "step", "linear"], help="Learning rate scheduler to use")
+    parser.add_argument('--wd', type=float, default=1e-6, help="Weight decay for optimizer")
 
-    parser.add_argument("--use_for_classification", action=argparse.BooleanOptionalAction, default=False, required=False,
-                        help="For MAE, whether to use the model for classification or not. Default is False.")
+    # mae
+    parser.add_argument("--for_cls", action=argparse.BooleanOptionalAction, default=False, required=False,
+                        help="For MAE and simclr , whether to use the model for classification or not. Default is False.")
     # Inference-only argument (to test a single image at the end)
     parser.add_argument('--inference_image', type=str, default=None,
                         help="Path to a single image for testing inference. e.g. /path/to/image.png")
@@ -44,7 +52,7 @@ def define_parser():
     return parser, parser.parse_args()
 
     
-def parse_args2string(args, parser, ignore_args=["n_clients", "num_rounds", "script", "key_metric", "launch_process", "launch_command", "ports", "export_config"]):
+def parse_args2string(args, parser, ignore_args=["n_clients", "num_rounds", "script", "key_metric", "launch_process", "launch_command", "ports", "export_config", "ckpt_fl_final"]):
     """
     Convert the arguments to a string for ScriptRunner.
     

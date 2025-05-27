@@ -1,5 +1,5 @@
 '''
-Author: Michael Lau
+Author: Michael Lau, wl2822@columbia.edu
 '''
 
 import torch

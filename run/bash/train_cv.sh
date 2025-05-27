@@ -1,11 +1,12 @@
 #!/bin/bash
-export PYTHONPATH="/data/michael/TED"
+export PYTHONPATH="/data/michael/public_code/TED4Share"
+
+ROOT_DIR_BASE=""  
 
 # Base configuration
 CHECKPOINT_DIR="../checkpoints"
-COMMENT="22_apr_25_3" # Comment for the run
+COMMENT="24_may_25_2" # Comment for the run
 MODEL_ARCHITECTURE="microsoft/resnet-18" 
-PRETRAINED="True"
 BATCH_SIZE=32
 IMG_SIZE=512
 EPOCHS=50
@@ -16,15 +17,15 @@ loss="focal"
 lr=0.00002 #0.0001  3e-5: 0.00003
 
 # Loop through folds 1 to 5
-for fold in {1..10}; do
+for fold in {7..10}; do # {1..10}
     echo "Running training for fold ${fold}..."
     
     # Set fold-specific directory
-    ROOT_DIR="/data/michael/TED/data/TED/16_apr_2025_big_crop_10_cv/fold_${fold}"
+    ROOT_DIR="${ROOT_DIR_BASE}/fold_${fold}"
     
     # Run training with or without checkpoint path
     if [ -z "$CKPT_PATH" ]; then
-        python ../train_fl.py \
+        python ../train.py \
             --root_dir "$ROOT_DIR" \
             --checkpoint_dir "$CHECKPOINT_DIR" \
             --comment "$COMMENT" \
@@ -39,7 +40,7 @@ for fold in {1..10}; do
             --lr "$lr" \
             --no-finetune 
     else
-        python ../train_fl.py \
+        python ../train.py \
             --root_dir "$ROOT_DIR" \
             --checkpoint_dir "$CHECKPOINT_DIR" \
             --comment "$COMMENT" \
